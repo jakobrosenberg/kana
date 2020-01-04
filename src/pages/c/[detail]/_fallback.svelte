@@ -1,28 +1,32 @@
 <script>
   import Button from '../../../UI/Button.svelte';
+  import ButtonToolbar from '../../../UI/ButtonToolbar.svelte';
 
-  import { autoplayEnabled } from '../../autoplay.js';
+  import { autoplayEnabled } from '../../stores/autoplay.js';
+  import { romajiEnabled } from '../../stores/romaji.js';
 
   function toggleAutoplay() {
     autoplayEnabled.update(autoplayEnabled => !autoplayEnabled);
+  }
+
+  function toggleRomaji() {
+    romajiEnabled.update(romajiEnabled => !romajiEnabled);
   }
 
   import Hiragana from '../../hiragana.js';
   import Katakana from '../../katakana.js';
   import { url, params, leftover } from '@sveltech/routify';
 
-   let language = $leftover;
+  let language = $leftover;
 
   export let detail;
 
-  let showRomaji = true;
 
-  function toggleRomaji() {
-      showRomaji = !showRomaji;
-  }
+
 </script>
 
 <style>
+
     .detail {
         font-family: sans-serif;
         text-align: center;
@@ -30,8 +34,11 @@
     .character {
         font-size: 9.6rem;
     }
-</style>
+    audio {
+        visibility: hidden;
+    }
 
+</style>
 
 <Button href="/">Back</Button>
 
@@ -40,7 +47,7 @@
         {#if character.romaji == detail }
         <div class="detail">
             <div class="character">{character.character}</div>
-            {#if showRomaji}<div class="romaji">{character.romaji}</div>{/if}
+            {#if $romajiEnabled}<div class="romaji">{character.romaji}</div>{/if}
         </div>
         {/if}
     {/each}
@@ -49,13 +56,18 @@
         {#if character.romaji == detail }
         <div class="detail">
             <div class="character">{character.character}</div>
-            {#if showRomaji}<div class="romaji">{character.romaji}</div>{/if}
+            {#if $romajiEnabled}<div class="romaji">{character.romaji}</div>{/if}
         </div>
         {/if}
     {/each}
 {/if}
 
 <audio src="/audio/{detail}.mp3" autoplay={$autoplayEnabled} controls />
-
-<Button on:click="{toggleRomaji}">Toggle romaji</Button>
-<Button on:click="{toggleAutoplay}">Toggle autoplay</Button>
+<ButtonToolbar>
+    <Button on:click="{toggleRomaji}">
+        Romaji {#if $romajiEnabled}on{:else}off{/if}
+    </Button>
+    <Button on:click="{toggleAutoplay}">
+        Autoplay {#if $autoplayEnabled}on{:else}off{/if}
+    </Button>
+</ButtonToolbar>
