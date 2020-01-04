@@ -73,6 +73,13 @@
         color: #FFF;
     }
 
+
+    .ghost {
+        background: #FFF;
+        border-color: #FFf;
+        color: #000;
+    }
+
 </style>
 
 <!--
@@ -87,6 +94,7 @@
     {classValue}
     class:primary={variant==='primary'}
     class:success={variant==='success'}
+    class:ghost={variant==='ghost'}
   >
         <ButtonInnerLayout {icon} {layout}><slot></slot></ButtonInnerLayout>
    </a>
@@ -99,6 +107,7 @@
             {style}
             class:primary={variant==='primary'}
             class:success={variant==='success'}
+            class:ghost={variant==='ghost'}
             on:submit on:click
         >
             <ButtonInnerLayout {icon} {layout}><slot></slot></ButtonInnerLayout>
@@ -112,6 +121,7 @@
             on:submit|preventDefault on:click
             class:primary={variant==='primary'}
             class:success={variant==='success'}
+            class:ghost={variant==='ghost'}
         >
             <ButtonInnerLayout {icon} {layout}><slot></slot></ButtonInnerLayout>
         </button>

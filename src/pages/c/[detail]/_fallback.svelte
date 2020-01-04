@@ -1,7 +1,18 @@
 <script>
+
+  // UI controls
+
+  import Icon from '../../../UI/Icon.svelte';
   import Button from '../../../UI/Button.svelte';
   import ButtonToolbar from '../../../UI/ButtonToolbar.svelte';
-  import Navbar from '../../../UI/Navbar.svelte';
+  import NavBar from '../../../UI/Navbar.svelte';
+
+  import Toolbar from '../../../UI/Toolbar.svelte';
+  import ToolbarGroup from '../../../UI/ToolbarGroup.svelte';
+  import ToolbarItem from '../../../UI/ToolbarItem.svelte';
+  import ToolbarTitle from '../../../UI/ToolbarTitle.svelte';
+
+  // Persistent functions
 
   import { autoplayEnabled } from '../../stores/autoplay.js';
   import { romajiEnabled } from '../../stores/romaji.js';
@@ -14,25 +25,44 @@
     romajiEnabled.update(romajiEnabled => !romajiEnabled);
   }
 
+  // Data
   import Hiragana from '../../hiragana.js';
   import Katakana from '../../katakana.js';
+
+  // State initial show
+
   import { url, params, leftover } from '@sveltech/routify';
-
   let language = $leftover;
-
   export let detail;
-  import { goto } from '@sveltech/routify'
 
+  let current;
+  let curEq;
 
-  function test() {
-      var next = 'e';
-      var currentPos = Hiragana.map(function(e) { return e.romaji; }).indexOf(detail);
-      var maxLength = Hiragana.length;
-      console.log(currentPos);
-      console.log(maxLength);
-      $goto('/c/'+(parseInt(currentPos+1))+'/hiragana')
+  $: current = Hiragana.map(function(e) { return e.romaji; }).indexOf(detail);
+  $: curEq = Hiragana[current].romaji;
+
+  const clamp = (number, min, max) => Math.min(Math.max(number, min), max);
+
+  function prev(e) {
+      current = clamp( --current, 0, Hiragana.length-1 );
   }
 
+  function next(e) {
+      current = clamp( ++current, 0, Hiragana.length-1 );
+  }
+
+  // Shortcuts
+  const ARROW_LEFT = 37;
+  const ARROW_RIGHT = 39;
+
+  function handleShortcut(e) {
+      if (e.keyCode === ARROW_LEFT ) {
+          prev();
+      }
+      if (e.keyCode === ARROW_RIGHT ) {
+          next();
+      }
+  }
 </script>
 
 <style>
@@ -40,9 +70,10 @@
     .detail {
         font-family: sans-serif;
         text-align: center;
-        background: red;
         padding: 2rem;
-        display: inline-block
+        margin: 0 auto;
+        user-select: none;
+        width: 20rem;
     }
 
     .character {
@@ -50,41 +81,73 @@
     }
 
     audio {
-        visibility: hidden;
+        display: block;
+        margin: 2rem auto;
+    }
+
+    .flex {
+        display: flex;
+        align-items: center;
+        padding: 2rem;
     }
 
 </style>
 
-<Navbar borderPosition="bottom">
-    <Button href="/">Back</Button>
-</Navbar>
+<svelte:window on:keyup={handleShortcut} />
 
-{#if language == "hiragana"}
-    {#each Hiragana as character }
-        {#if character.romaji == detail }
-        <div class="detail" on:click={test}>
-            <div class="character">{character.character}</div>
-            {#if $romajiEnabled}<div class="romaji">{character.romaji}</div>{/if}
-        </div>
-        {/if}
-    {/each}
-{:else}
-    {#each Katakana as character }
-        {#if character.romaji == detail }
-        <div class="detail">
-            <div class="character">{character.character}</div>
-            {#if $romajiEnabled}<div class="romaji">{character.romaji}</div>{/if}
-        </div>
-        {/if}
-    {/each}
-{/if}
+<NavBar borderPosition="bottom">
+    <Toolbar>
+        <ToolbarGroup align="left">
+            <ToolbarItem>
+                <Button variant="ghost" icon="chevron-left" href="/">Back</Button>
+            </ToolbarItem>
+        </ToolbarGroup>
+    </Toolbar>
+</NavBar>
 
-<audio src="/audio/{detail}.mp3" autoplay={$autoplayEnabled} controls />
-<ButtonToolbar>
-    <Button on:click="{toggleRomaji}">
-        Romaji {#if $romajiEnabled}on{:else}off{/if}
-    </Button>
-    <Button on:click="{toggleAutoplay}">
-        Autoplay sound {#if $autoplayEnabled}on{:else}off{/if}
-    </Button>
-</ButtonToolbar>
+
+<div class="flex">
+    <Button on:click={prev} variant="ghost" disabled={current==0} layout="icon-only" icon="chevron-left">Previous</Button>
+
+    <!-- {current}{curEq} -->
+    {#if language == "hiragana"}
+        {#each Hiragana as character, index }
+            {#if current == index }
+            <div class="detail">
+                <div class="character">{character.character}</div>
+                {#if $romajiEnabled}<div class="romaji">{character.romaji}</div>{/if}
+                <audio src="/audio/{curEq}.mp3" autoplay={$autoplayEnabled} controls />
+            </div>
+            {/if}
+        {/each}
+    {:else}
+        {#each Katakana as character, index }
+            {#if current == index }
+            <div class="detail">
+                <div class="character">{character.character}</div>
+                {#if $romajiEnabled}<div class="romaji">{character.romaji}</div>{/if}
+                <audio src="/audio/{curEq}.mp3" autoplay={$autoplayEnabled} controls />
+            </div>
+            {/if}
+        {/each}
+    {/if}
+    <Button on:click={next} variant="ghost" layout="icon-only" icon="chevron-right">Next</Button>
+</div>
+
+<NavBar borderPosition="top">
+    <Toolbar>
+        <ToolbarGroup align="left">
+            <ToolbarItem>
+                <ButtonToolbar>
+                    <Button on:click="{toggleRomaji}">
+                        Romaji {#if $romajiEnabled}on{:else}off{/if}
+                    </Button>
+                    <Button on:click="{toggleAutoplay}">
+                        Autoplay sound {#if $autoplayEnabled}on{:else}off{/if}
+                    </Button>
+                </ButtonToolbar>
+            </ToolbarItem>
+        </ToolbarGroup>
+    </Toolbar>
+</NavBar>
+

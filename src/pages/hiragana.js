@@ -181,7 +181,7 @@ export default [
       "romaji":"yo",
   },
 
-  // Eighth row
+  // Ninth row
 
   {
       "character": "ら",
@@ -204,7 +204,7 @@ export default [
       "romaji":"ro",
   },
 
-  // Eighth row
+  // Tenth row
 
   {
       "character": "わ",

@@ -17,7 +17,7 @@
 
 </script>
 
-<NavBar>
+<NavBar borderPosition="bottom">
     <Toolbar>
         <ToolbarGroup align="left">
         </ToolbarGroup>
