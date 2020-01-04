@@ -26,8 +26,23 @@
   }
 
   // Data
-  import Hiragana from '../../hiragana.js';
-  import Katakana from '../../katakana.js';
+  import Hiragana from '../../../hiragana.js';
+  import Katakana from '../../../katakana.js';
+  import HiraganaDouble from '../../../hiragana-digraphs.js';
+  import KatakanaDouble from '../../../katakana-digraphs.js';
+
+  // Filter our objects for the use of navigating them; they contain empty objects for layout purposes
+  let HiraganaFiltered = Hiragana.filter(function (el) { return el.character });
+  let KatakanaFiltered = Katakana.filter(function (el) { return el.character });
+  let HiraganaDoubleFiltered = HiraganaDouble.filter(function (el) { return el.character });
+  let KatakanaDoubleFiltered = KatakanaDouble.filter(function (el) { return el.character });
+
+  let currentDataSet;
+  $: currentDataSet =
+     (language == "hiragana") ? HiraganaFiltered
+     : (language == "katakana") ? KatakanaFiltered
+     : (language == "hiragana-digraphs") ? HiraganaDoubleFiltered
+     : KatakanaDoubleFiltered;
 
   // State initial show
 
@@ -38,18 +53,13 @@
   let current;
   let curEq;
 
-  $: current = Hiragana.map(function(e) { return e.romaji; }).indexOf(detail);
-  $: curEq = Hiragana[current].romaji;
+  $: current = currentDataSet.map(function(e) { return e.romaji; }).indexOf(detail);
+  $: curEq = currentDataSet[current].romaji;
 
   const clamp = (number, min, max) => Math.min(Math.max(number, min), max);
 
-  function prev(e) {
-      current = clamp( --current, 0, Hiragana.length-1 );
-  }
-
-  function next(e) {
-      current = clamp( ++current, 0, Hiragana.length-1 );
-  }
+  function prev(e) { current = clamp( --current, 0, currentDataSet.length-1 ); }
+  function next(e) { current = clamp( ++current, 0, currentDataSet.length-1 ); }
 
   // Shortcuts
   const ARROW_LEFT = 37;
@@ -63,6 +73,7 @@
           next();
       }
   }
+
 </script>
 
 <style>
@@ -78,6 +89,11 @@
 
     .character {
         font-size: 9.6rem;
+    }
+
+    .romaji {
+        margin-top: 1rem;
+        font-size: 2.8rem;
     }
 
     audio {
@@ -99,7 +115,7 @@
     <Toolbar>
         <ToolbarGroup align="left">
             <ToolbarItem>
-                <Button variant="ghost" icon="chevron-left" href="/">Back</Button>
+                <Button variant="ghost" icon="chevron-left" href="{$url('../../../')}">Back</Button>
             </ToolbarItem>
         </ToolbarGroup>
     </Toolbar>
@@ -109,28 +125,16 @@
 <div class="flex">
     <Button on:click={prev} variant="ghost" disabled={current==0} layout="icon-only" icon="chevron-left">Previous</Button>
 
-    <!-- {current}{curEq} -->
-    {#if language == "hiragana"}
-        {#each Hiragana as character, index }
-            {#if current == index }
-            <div class="detail">
-                <div class="character">{character.character}</div>
-                {#if $romajiEnabled}<div class="romaji">{character.romaji}</div>{/if}
-                <audio src="/audio/{curEq}.mp3" autoplay={$autoplayEnabled} controls />
-            </div>
-            {/if}
-        {/each}
-    {:else}
-        {#each Katakana as character, index }
-            {#if current == index }
-            <div class="detail">
-                <div class="character">{character.character}</div>
-                {#if $romajiEnabled}<div class="romaji">{character.romaji}</div>{/if}
-                <audio src="/audio/{curEq}.mp3" autoplay={$autoplayEnabled} controls />
-            </div>
-            {/if}
-        {/each}
-    {/if}
+    {#each currentDataSet as character, index }
+        {#if current == index }
+        <div class="detail">
+            <div class="character">{character.character}</div>
+            {#if $romajiEnabled}<div class="romaji">{character.romaji}</div>{/if}
+            <audio src="/audio/{curEq}.mp3" autoplay={$autoplayEnabled} controls />
+        </div>
+        {/if}
+    {/each}
+
     <Button on:click={next} variant="ghost" layout="icon-only" icon="chevron-right">Next</Button>
 </div>
 

@@ -6,6 +6,8 @@
     import ToolbarGroup from '../UI/ToolbarGroup.svelte';
     import ToolbarItem from '../UI/ToolbarItem.svelte';
     import ToolbarTitle from '../UI/ToolbarTitle.svelte';
+    
+    import Spacer from '../UI/Spacer.svelte';
 
     import Button from '../UI/Button.svelte';
     import Icon from '../UI/Icon.svelte';
@@ -13,30 +15,25 @@
     import SegmentedControl from '../UI/SegmentedControl.svelte';
     import SegmentedControlItem from '../UI/SegmentedControlItem.svelte';
 
-    import { isActive, url } from '@sveltech/routify';
-
-    const mainTabs = [
-        ['./index', 'Hiragana'],
-        ['./katakana', 'Katakana'],
-        ['./quiz', 'Quiz']
-      ];
 
 </script>
 
-<slot></slot>
-
-<NavBar borderPosition="top">
-
+<NavBar borderPosition="bottom">
     <Toolbar>
-        <ToolbarGroup align="justify">
-            <ToolbarItem grow>
-                <SegmentedControl>
-                    {#each mainTabs as [path, name]}
-                        <SegmentedControlItem href={$url(path)} active={$isActive(path)}>{name}</SegmentedControlItem>
-                    {/each}
-                </SegmentedControl>
+        <ToolbarGroup align="left">
+        </ToolbarGroup>
+        <ToolbarGroup align="center">
+            <ToolbarItem>
+                <ToolbarTitle>Quiz</ToolbarTitle>
+            </ToolbarItem>
+        </ToolbarGroup>
+        <ToolbarGroup align="right">
+            <ToolbarItem>
             </ToolbarItem>
         </ToolbarGroup>
     </Toolbar>
-
 </NavBar>
+
+<Spacer>
+    <p>Todo: implement quiz.</p>
+</Spacer>
