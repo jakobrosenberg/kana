@@ -1,3 +1,4 @@
 * Implement nice transition on drag on detail page
 * Filter the data on detail page so we only show the items that have data when doing next/prev
 * Implement icons tab bar
+* Add page titles for every character
