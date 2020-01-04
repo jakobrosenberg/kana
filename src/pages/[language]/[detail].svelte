@@ -2,20 +2,20 @@
 
   // UI controls
 
-  import Icon from '../../../UI/Icon.svelte';
-  import Button from '../../../UI/Button.svelte';
-  import ButtonToolbar from '../../../UI/ButtonToolbar.svelte';
-  import NavBar from '../../../UI/Navbar.svelte';
+  import Icon from '../../UI/Icon.svelte';
+  import Button from '../../UI/Button.svelte';
+  import ButtonToolbar from '../../UI/ButtonToolbar.svelte';
+  import NavBar from '../../UI/Navbar.svelte';
 
-  import Toolbar from '../../../UI/Toolbar.svelte';
-  import ToolbarGroup from '../../../UI/ToolbarGroup.svelte';
-  import ToolbarItem from '../../../UI/ToolbarItem.svelte';
-  import ToolbarTitle from '../../../UI/ToolbarTitle.svelte';
+  import Toolbar from '../../UI/Toolbar.svelte';
+  import ToolbarGroup from '../../UI/ToolbarGroup.svelte';
+  import ToolbarItem from '../../UI/ToolbarItem.svelte';
+  import ToolbarTitle from '../../UI/ToolbarTitle.svelte';
 
   // Persistent functions
 
-  import { autoplayEnabled } from '../../stores/autoplay.js';
-  import { romajiEnabled } from '../../stores/romaji.js';
+  import { autoplayEnabled } from '../stores/autoplay.js';
+  import { romajiEnabled } from '../stores/romaji.js';
 
   function toggleAutoplay() {
     autoplayEnabled.update(autoplayEnabled => !autoplayEnabled);
@@ -25,11 +25,18 @@
     romajiEnabled.update(romajiEnabled => !romajiEnabled);
   }
 
+  // State initial show
+
+  import { url, params } from '@sveltech/routify';
+
+  export let language;
+  export let detail;
+
   // Data
-  import Hiragana from '../../../hiragana.js';
-  import Katakana from '../../../katakana.js';
-  import HiraganaDouble from '../../../hiragana-digraphs.js';
-  import KatakanaDouble from '../../../katakana-digraphs.js';
+  import Hiragana from '../../hiragana.js';
+  import Katakana from '../../katakana.js';
+  import HiraganaDouble from '../../hiragana-digraphs.js';
+  import KatakanaDouble from '../../katakana-digraphs.js';
 
   // Filter our objects for the use of navigating them; they contain empty objects for layout purposes
   let HiraganaFiltered = Hiragana.filter(function (el) { return el.character });
@@ -38,22 +45,21 @@
   let KatakanaDoubleFiltered = KatakanaDouble.filter(function (el) { return el.character });
 
   let currentDataSet;
+  $: Object.keys($params).forEach(function eachKey(key) { if (key == "language") { language = $params[key]; }});
+
   $: currentDataSet =
      (language == "hiragana") ? HiraganaFiltered
      : (language == "katakana") ? KatakanaFiltered
      : (language == "hiragana-digraphs") ? HiraganaDoubleFiltered
      : KatakanaDoubleFiltered;
 
-  // State initial show
-
-  import { url, params, leftover } from '@sveltech/routify';
-  let language = $leftover;
-  export let detail;
+  //$: console.log(currentDataSet);
+  //$: console.log(detail);
 
   let current;
   let curEq;
 
-  $: current = currentDataSet.map(function(e) { return e.romaji; }).indexOf(detail);
+  $: current = currentDataSet.map( function(e) { return e.romaji; }).indexOf(detail);
   $: curEq = currentDataSet[current].romaji;
 
   const clamp = (number, min, max) => Math.min(Math.max(number, min), max);
@@ -73,6 +79,7 @@
           next();
       }
   }
+
 
 </script>
 
@@ -115,7 +122,7 @@
     <Toolbar>
         <ToolbarGroup align="left">
             <ToolbarItem>
-                <Button variant="ghost" icon="chevron-left" href="{$url('../../../')}">Back</Button>
+                <Button variant="ghost" icon="chevron-left" href="{$url('../../')}">Back</Button>
             </ToolbarItem>
         </ToolbarGroup>
     </Toolbar>
@@ -133,6 +140,8 @@
             <audio src="/audio/{curEq}.mp3" autoplay={$autoplayEnabled} controls />
         </div>
         {/if}
+    {:else}
+        <p>No dataset defined.</p>
     {/each}
 
     <Button on:click={next} variant="ghost" layout="icon-only" icon="chevron-right">Next</Button>

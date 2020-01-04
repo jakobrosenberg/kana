@@ -66,7 +66,7 @@
             </li>
             {:else}
             <li class="c-character-grid__item">
-                <a href={$url('/c/:detail/'+urlLang, { detail: character.romaji })}>
+                <a href={$url('/:language/:detail/', { detail: character.romaji, language: urlLang })}>
                     {character.character}
                 </a>
                 <!-- {character.romaji} -->
