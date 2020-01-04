@@ -17,7 +17,8 @@
 
 <slot></slot>
 
-<NavBar>
+<NavBar borderPosition="top">
+
     <Toolbar>
         <ToolbarGroup align="justify">
             <ToolbarItem grow>
@@ -29,4 +30,5 @@
             </ToolbarItem>
         </ToolbarGroup>
     </Toolbar>
+
 </NavBar>

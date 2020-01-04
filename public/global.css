@@ -47,6 +47,9 @@ table {
 	border-spacing: 0;
 }
 
+body {
+  font-family: sans-serif;
+}
 
 .c-character-grid {
     display: grid;
@@ -55,9 +58,17 @@ table {
 
 .c-character-grid__item {
     border-bottom: 1px solid #CCC;
-    padding: 1rem;
     border-right: 1px solid #CCC;
     text-align: center;
+}
+
+.c-character-grid__item a {
+    padding: 2rem 1rem;
+    font-size: 1.8rem;
+    text-decoration: none;
+    display: block;
+    color: #000;
+    font-family: sans-serif;
 }
 
 .c-character-grid__item:nth-child(5n) {
