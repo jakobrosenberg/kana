@@ -1,5 +1,6 @@
 <script>
     import Hiragana from './hiragana.js';
+    import { url } from '@sveltech/routify';
 
     import NavBar from '../UI/NavBar.svelte';
 
@@ -14,25 +15,8 @@
     import SegmentedControl from '../UI/SegmentedControl.svelte';
     import SegmentedControlItem from '../UI/SegmentedControlItem.svelte';
 
+
 </script>
-
-<style>
-    .c-character-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    }
-
-    .c-character-grid__item {
-        border-bottom: 1px solid #CCC;
-        padding: 1rem;
-        border-right: 1px solid #CCC;
-        text-align: center;
-    }
-
-    .c-character-grid__item:nth-child(5n) {
-        border-right: none;
-    }
-</style>
 
 <NavBar>
     <Toolbar>
@@ -53,7 +37,9 @@
 <ul class="c-character-grid">
     {#each Hiragana as character }
         <li class="c-character-grid__item">
-            <a href="/hiragana/{character.romaji}">{character.character}</a>
+            <a href={$url('/c/:detail/hiragana', { detail: character.romaji })}>
+                {character.character}
+            </a>
             <!-- {character.romaji} -->
         </li>
     {/each}

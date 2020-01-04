@@ -1,18 +1,19 @@
 <script>
-  import Button from '../../UI/Button.svelte';
+  import Button from '../../../UI/Button.svelte';
 
-  import { autoplayEnabled } from '../autoplay.js';
+  import { autoplayEnabled } from '../../autoplay.js';
 
   function toggleAutoplay() {
     autoplayEnabled.update(autoplayEnabled => !autoplayEnabled);
   }
 
-  import Hiragana from '../hiragana.js';
-  import Katakana from '../katakana.js';
-  import { params } from '@sveltech/routify';
+  import Hiragana from '../../hiragana.js';
+  import Katakana from '../../katakana.js';
+  import { url, params, leftover } from '@sveltech/routify';
+
+   let language = $leftover;
 
   export let detail;
-  export let language;
 
   let showRomaji = true;
 
@@ -33,8 +34,7 @@
 
 
 <Button href="/">Back</Button>
-{language}
-{detail}
+
 {#if language == "hiragana"}
     {#each Hiragana as character }
         {#if character.romaji == detail }

@@ -1,5 +1,6 @@
 <script>
     import Katakana from './katakana.js';
+    import { url } from '@sveltech/routify';
 
     import NavBar from '../UI/NavBar.svelte';
 
@@ -35,7 +36,9 @@
 <ul class="c-character-grid">
     {#each Katakana as character }
         <li class="c-character-grid__item">
-            <a href="/katakana/{character.romaji}?wasKatakana">{character.character}</a>
+            <a href={$url('/c/:detail/katakana', { detail: character.romaji })}>
+                {character.character}
+            </a>
             <!-- {character.romaji} -->
         </li>
     {/each}
