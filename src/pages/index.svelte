@@ -1,6 +1,4 @@
 <script>
-    import MainGrid from '../MainGrid.svelte';
-    import Hiragana from '../hiragana.js';
+import {goto } from '@sveltech/routify'
+$goto('../mono/hiragana')
 </script>
-
-<MainGrid pageTitle="Hiragana" urlLang="hiragana" dataset={Hiragana} />
